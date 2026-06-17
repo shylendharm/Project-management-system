@@ -33,14 +33,17 @@ app.use(helmet({
 // CORS Configuration with strict origin validation
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
-  : ['http://localhost:3000'];
+  : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://localhost:5173'];
 
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps, curl, postman in dev)
     if (!origin) return callback(null, true);
     
-    if (allowedOrigins.indexOf(origin) !== -1) {
+    // Check if origin matches allowed list or is a local development address
+    const isLocalhost = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+    
+    if (allowedOrigins.indexOf(origin) !== -1 || isLocalhost) {
       callback(null, true);
     } else {
       callback(new Error('Blocked by CORS policy: Origin not allowed.'));

@@ -18,16 +18,16 @@ const createTaskSchema = z.object({
   priority: TaskPriority.optional().default('MEDIUM'),
   status: TaskStatus.optional().default('PENDING'),
   dueDate: z
-    .string()
-    .datetime({ offset: true })
-    .optional()
-    .nullable()
-    .or(z.literal(''))
-    .transform(v => v ? new Date(v) : null),
+    .preprocess((val) => {
+      if (!val) return null;
+      const d = new Date(val);
+      return isNaN(d.getTime()) ? null : d;
+    }, z.date().nullable().optional()),
   projectId: z
-    .number({ required_error: 'projectId is required' })
-    .int()
-    .positive('projectId must be a positive integer'),
+    .preprocess((val) => (val ? Number(val) : undefined), z
+      .number({ required_error: 'projectId is required' })
+      .int()
+      .positive('projectId must be a positive integer')),
 });
 
 const updateTaskSchema = z.object({
@@ -46,12 +46,11 @@ const updateTaskSchema = z.object({
   priority: TaskPriority.optional(),
   status: TaskStatus.optional(),
   dueDate: z
-    .string()
-    .datetime({ offset: true })
-    .optional()
-    .nullable()
-    .or(z.literal(''))
-    .transform(v => v ? new Date(v) : undefined),
+    .preprocess((val) => {
+      if (!val) return null;
+      const d = new Date(val);
+      return isNaN(d.getTime()) ? null : d;
+    }, z.date().nullable().optional()),
 });
 
 module.exports = {

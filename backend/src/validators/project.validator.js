@@ -16,17 +16,17 @@ const createProjectSchema = z.object({
     .nullable(),
   status: ProjectStatus.optional().default('NOT_STARTED'),
   startDate: z
-    .string()
-    .datetime({ offset: true })
-    .optional()
-    .or(z.literal(''))
-    .transform(v => v ? new Date(v) : undefined),
+    .preprocess((val) => {
+      if (!val) return undefined;
+      const d = new Date(val);
+      return isNaN(d.getTime()) ? undefined : d;
+    }, z.date().optional()),
   endDate: z
-    .string()
-    .datetime({ offset: true })
-    .optional()
-    .or(z.literal(''))
-    .transform(v => v ? new Date(v) : undefined),
+    .preprocess((val) => {
+      if (!val) return undefined;
+      const d = new Date(val);
+      return isNaN(d.getTime()) ? undefined : d;
+    }, z.date().optional()),
 }).refine(data => {
   if (data.startDate && data.endDate) {
     return new Date(data.endDate) >= new Date(data.startDate);
@@ -49,17 +49,17 @@ const updateProjectSchema = z.object({
     .nullable(),
   status: ProjectStatus.optional(),
   startDate: z
-    .string()
-    .datetime({ offset: true })
-    .optional()
-    .or(z.literal(''))
-    .transform(v => v ? new Date(v) : undefined),
+    .preprocess((val) => {
+      if (!val) return undefined;
+      const d = new Date(val);
+      return isNaN(d.getTime()) ? undefined : d;
+    }, z.date().optional()),
   endDate: z
-    .string()
-    .datetime({ offset: true })
-    .optional()
-    .or(z.literal(''))
-    .transform(v => v ? new Date(v) : undefined),
+    .preprocess((val) => {
+      if (!val) return undefined;
+      const d = new Date(val);
+      return isNaN(d.getTime()) ? undefined : d;
+    }, z.date().optional()),
 }).refine(data => {
   if (data.startDate && data.endDate) {
     return new Date(data.endDate) >= new Date(data.startDate);
