@@ -2,6 +2,7 @@ const projectService = require('../services/project.service');
 const catchAsync = require('../utils/catchAsync');
 const { sendSuccess } = require('../utils/responseHandler');
 const AppError = require('../utils/AppError');
+const { logAction } = require('../services/auditLog.service');
 
 // ─── CREATE PROJECT ───────────────────────────────────────────────────────────
 const createProject = catchAsync(async (req, res, next) => {
@@ -9,6 +10,7 @@ const createProject = catchAsync(async (req, res, next) => {
     ...req.validatedBody,
     userId: req.user.id,
   });
+  await logAction(req.user.id, 'PROJECT_CREATED', `Project "${project.name}" created`);
 
   return sendSuccess(res, 'Project created successfully', project, 201);
 });
@@ -75,6 +77,7 @@ const deleteProject = catchAsync(async (req, res, next) => {
   if (!deleted) {
     throw new AppError('Project not found', 404);
   }
+  await logAction(req.user.id, 'PROJECT_DELETED', `Project ID ${id} deleted`);
 
   return sendSuccess(res, 'Project deleted successfully');
 });

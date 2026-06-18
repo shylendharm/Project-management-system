@@ -19,8 +19,18 @@ model User {
   role      Role     @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  projects  Project[]
-  tasks     Task[]
+  projects   Project[]
+  tasks      Task[]
+  auditLogs  AuditLog[]
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  action    String
+  details   String?
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
 }
 
 enum ProjectStatus {

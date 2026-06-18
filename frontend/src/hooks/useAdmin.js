@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getUsers, updateUserRole, deleteUser } from '../api/adminApi';
+import { getUsers, updateUserRole, deleteUser, getLogs } from '../api/adminApi';
 import toast from 'react-hot-toast';
 import { getErrorMessage } from '../utils/helpers';
 
 const useAdmin = () => {
   const [users, setUsers]     = useState([]);
+  const [logs, setLogs]       = useState([]);
   const [loading, setLoading] = useState(true);
+  const [logsLoading, setLogsLoading] = useState(false);
   const [error, setError]     = useState(null);
 
   const fetchUsers = useCallback(async () => {
@@ -20,6 +22,18 @@ const useAdmin = () => {
       toast.error(msg);
     } finally {
       setLoading(false);
+    }
+  }, []);
+
+  const fetchLogs = useCallback(async (page = 1) => {
+    try {
+      setLogsLoading(true);
+      const res = await getLogs(page, 20);
+      setLogs(res.data.data || []);
+    } catch (err) {
+      toast.error(getErrorMessage(err));
+    } finally {
+      setLogsLoading(false);
     }
   }, []);
 
@@ -59,9 +73,12 @@ const useAdmin = () => {
 
   return {
     users,
+    logs,
     loading,
+    logsLoading,
     error,
     fetchUsers,
+    fetchLogs,
     changeRole,
     removeUser,
   };

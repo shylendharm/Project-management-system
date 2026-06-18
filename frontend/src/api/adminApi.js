@@ -11,3 +11,7 @@ export const updateUserRole = (id, role) => {
 export const deleteUser = (id) => {
   return axiosInstance.delete(`/admin/users/${id}`);
 };
+
+export const getLogs = (page = 1, limit = 20) => {
+  return axiosInstance.get(`/admin/logs?page=${page}&limit=${limit}`);
+};

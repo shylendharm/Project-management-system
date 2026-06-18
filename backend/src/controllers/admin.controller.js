@@ -2,6 +2,7 @@ const prisma = require('../config/db');
 const catchAsync = require('../utils/catchAsync');
 const { sendSuccess } = require('../utils/responseHandler');
 const AppError = require('../utils/AppError');
+const { logAction } = require('../services/auditLog.service');
 
 // ─── GET ALL USERS ────────────────────────────────────────────────────────────
 const getAllUsers = catchAsync(async (req, res, next) => {
@@ -56,6 +57,7 @@ const updateUserRole = catchAsync(async (req, res, next) => {
     },
   });
 
+  await logAction(req.user.id, 'USER_ROLE_CHANGED', `User ${userId} role changed to ${role}`);
   return sendSuccess(res, 'User role updated successfully', updatedUser);
 });
 
@@ -79,11 +81,40 @@ const deleteUser = catchAsync(async (req, res, next) => {
     prisma.user.delete({ where: { id: userId } }),
   ]);
 
+  await logAction(req.user.id, 'USER_DELETED', `User ID ${userId} and all their data deleted`);
   return sendSuccess(res, 'User and all their projects/tasks deleted successfully');
+});
+
+// ─── GET AUDIT LOGS ───────────────────────────────────────────────────────────
+const getLogs = catchAsync(async (req, res) => {
+  const page  = Math.max(1, parseInt(req.query.page, 10) || 1);
+  const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 20));
+
+  const [logs, total] = await Promise.all([
+    prisma.auditLog.findMany({
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        user: {
+          select: { id: true, fullName: true, email: true, role: true },
+        },
+      },
+    }),
+    prisma.auditLog.count(),
+  ]);
+
+  return sendSuccess(res, 'Audit logs retrieved', logs, 200, {
+    total,
+    totalPages: Math.ceil(total / limit),
+    currentPage: page,
+    limit,
+  });
 });
 
 module.exports = {
   getAllUsers,
   updateUserRole,
   deleteUser,
+  getLogs,
 };

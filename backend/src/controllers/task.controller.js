@@ -2,6 +2,7 @@ const taskService = require('../services/task.service');
 const catchAsync = require('../utils/catchAsync');
 const { sendSuccess } = require('../utils/responseHandler');
 const AppError = require('../utils/AppError');
+const { logAction } = require('../services/auditLog.service');
 
 // ─── CREATE TASK ──────────────────────────────────────────────────────────────
 const createTask = catchAsync(async (req, res, next) => {
@@ -14,6 +15,7 @@ const createTask = catchAsync(async (req, res, next) => {
   if (!task) {
     throw new AppError('Project not found or you do not have permission to add tasks to it', 404);
   }
+  await logAction(req.user.id, 'TASK_CREATED', `Task "${task.title}" created`);
 
   return sendSuccess(res, 'Task created successfully', task, 201);
 });
@@ -108,6 +110,7 @@ const markTaskComplete = catchAsync(async (req, res, next) => {
   if (!task) {
     throw new AppError('Task not found', 404);
   }
+  await logAction(req.user.id, 'TASK_COMPLETED', `Task "${task.title}" marked complete`);
 
   return sendSuccess(res, 'Task marked as completed', task);
 });
@@ -124,6 +127,7 @@ const deleteTask = catchAsync(async (req, res, next) => {
   if (!task) {
     throw new AppError('Task not found', 404);
   }
+  await logAction(req.user.id, 'TASK_DELETED', `Task ID ${id} deleted`);
 
   return sendSuccess(res, 'Task deleted successfully');
 });
