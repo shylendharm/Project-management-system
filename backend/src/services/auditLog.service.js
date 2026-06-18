@@ -1,4 +1,4 @@
-const { prisma } = require('./prisma.service');
+const prisma = require('../config/db');
 
 /**
  * Write an audit log entry.
