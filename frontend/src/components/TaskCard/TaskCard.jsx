@@ -1,4 +1,4 @@
-import { formatDate, statusBadge, priorityBadge, isOverdue } from '../utils/helpers';
+import { formatDate, statusBadge, priorityBadge, isOverdue } from '../../utils/helpers';
 
 const TaskCard = ({ task, onComplete, onEdit, onDelete }) => {
   const isDone = task.status === 'COMPLETED';
@@ -34,37 +34,39 @@ const TaskCard = ({ task, onComplete, onEdit, onDelete }) => {
               color: overdue ? 'var(--clr-danger)' : 'var(--clr-text-muted)',
               fontWeight: overdue ? 600 : 400,
             }}>
-              {overdue ? '⚠️ ' : '📅 '}{formatDate(task.dueDate)}
+              {overdue ? 'Overdue: ' : 'Due: '}{formatDate(task.dueDate)}
             </span>
           )}
           {task.project && (
-            <span className="task-card__project">📁 {task.project.name}</span>
+            <span className="task-card__project">{task.project.name}</span>
           )}
         </div>
       </div>
 
       {/* Actions */}
-      <div className="task-card__actions">
+      <div className="task-card__actions" style={{ display: 'flex', gap: 'var(--space-xs)' }}>
         {onEdit && (
           <button
             id={`edit-task-${task.id}`}
-            className="btn btn-ghost btn-sm btn-icon"
+            className="btn btn-ghost btn-sm"
             onClick={() => onEdit(task)}
             title="Edit task"
             aria-label={`Edit ${task.title}`}
+            style={{ padding: '4px 8px', fontSize: '0.75rem' }}
           >
-            ✏️
+            Edit
           </button>
         )}
         {onDelete && (
           <button
             id={`delete-task-${task.id}`}
-            className="btn btn-danger btn-sm btn-icon"
+            className="btn btn-danger btn-sm"
             onClick={() => onDelete(task.id)}
             title="Delete task"
             aria-label={`Delete ${task.title}`}
+            style={{ padding: '4px 8px', fontSize: '0.75rem' }}
           >
-            🗑️
+            Delete
           </button>
         )}
       </div>

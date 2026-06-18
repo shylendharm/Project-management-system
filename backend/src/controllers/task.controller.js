@@ -5,10 +5,11 @@ const AppError = require('../utils/AppError');
 
 // ─── CREATE TASK ──────────────────────────────────────────────────────────────
 const createTask = catchAsync(async (req, res, next) => {
+  const isAdmin = req.user.role === 'ADMIN';
   const task = await taskService.createTask({
     ...req.validatedBody,
     userId: req.user.id,
-  });
+  }, isAdmin);
 
   if (!task) {
     throw new AppError('Project not found or you do not have permission to add tasks to it', 404);
@@ -17,28 +18,50 @@ const createTask = catchAsync(async (req, res, next) => {
   return sendSuccess(res, 'Task created successfully', task, 201);
 });
 
-// ─── GET ALL TASKS (own, cross-project) ──────────────────────────────────────
+// ─── GET ALL TASKS (own, cross-project or all if admin) ───────────────────────
 const getAllTasks = catchAsync(async (req, res, next) => {
-  const { search, status, priority } = req.query;
-  const tasks = await taskService.getAllTasks(req.user.id, { search, status, priority });
-  
-  return sendSuccess(res, 'Tasks retrieved successfully', tasks, 200, { count: tasks.length });
+  const { search, status, priority, sortBy = 'createdAt', order = 'desc' } = req.query;
+  const page  = Math.max(1, parseInt(req.query.page,  10) || 1);
+  const limit = Math.min(50, Math.max(1, parseInt(req.query.limit, 10) || 10));
+  const isAdmin = req.user.role === 'ADMIN';
+
+  const { data, total } = await taskService.getAllTasks(req.user.id, { search, status, priority, page, limit, sortBy, order }, isAdmin);
+  const totalPages = Math.ceil(total / limit);
+
+  return sendSuccess(res, 'Tasks retrieved successfully', data, 200, {
+    total,
+    totalPages,
+    currentPage: page,
+    limit,
+  });
 });
 
-// ─── GET TASKS BY PROJECT ─────────────────────────────────────────────────────
+// ─── GET TASKS BY PROJECT ─────────────────────────────────────────────────────────
 const getTasksByProject = catchAsync(async (req, res, next) => {
   const projectId = parseInt(req.params.projectId, 10);
   if (isNaN(projectId)) {
     throw new AppError('Invalid project ID format', 400);
   }
 
-  const { search, status, priority } = req.query;
-  const tasks = await taskService.getTasksByProject(projectId, req.user.id, { search, status, priority });
-  if (!tasks) {
+  const { search, status, priority, sortBy = 'createdAt', order = 'desc' } = req.query;
+  const page  = Math.max(1, parseInt(req.query.page,  10) || 1);
+  const limit = Math.min(50, Math.max(1, parseInt(req.query.limit, 10) || 10));
+  const isAdmin = req.user.role === 'ADMIN';
+
+  const result = await taskService.getTasksByProject(projectId, req.user.id, { search, status, priority, page, limit, sortBy, order }, isAdmin);
+  if (!result) {
     throw new AppError('Project not found or access denied', 404);
   }
 
-  return sendSuccess(res, 'Tasks retrieved successfully', tasks, 200, { count: tasks.length });
+  const { data, total } = result;
+  const totalPages = Math.ceil(total / limit);
+
+  return sendSuccess(res, 'Tasks retrieved successfully', data, 200, {
+    total,
+    totalPages,
+    currentPage: page,
+    limit,
+  });
 });
 
 // ─── GET TASK BY ID ───────────────────────────────────────────────────────────
@@ -48,7 +71,8 @@ const getTaskById = catchAsync(async (req, res, next) => {
     throw new AppError('Invalid task ID format', 400);
   }
 
-  const task = await taskService.getTaskById(id, req.user.id);
+  const isAdmin = req.user.role === 'ADMIN';
+  const task = await taskService.getTaskById(id, req.user.id, isAdmin);
   if (!task) {
     throw new AppError('Task not found', 404);
   }
@@ -63,7 +87,8 @@ const updateTask = catchAsync(async (req, res, next) => {
     throw new AppError('Invalid task ID format', 400);
   }
 
-  const task = await taskService.updateTask(id, req.user.id, req.validatedBody);
+  const isAdmin = req.user.role === 'ADMIN';
+  const task = await taskService.updateTask(id, req.user.id, req.validatedBody, isAdmin);
   if (!task) {
     throw new AppError('Task not found', 404);
   }
@@ -78,7 +103,8 @@ const markTaskComplete = catchAsync(async (req, res, next) => {
     throw new AppError('Invalid task ID format', 400);
   }
 
-  const task = await taskService.markTaskComplete(id, req.user.id);
+  const isAdmin = req.user.role === 'ADMIN';
+  const task = await taskService.markTaskComplete(id, req.user.id, isAdmin);
   if (!task) {
     throw new AppError('Task not found', 404);
   }
@@ -93,7 +119,8 @@ const deleteTask = catchAsync(async (req, res, next) => {
     throw new AppError('Invalid task ID format', 400);
   }
 
-  const task = await taskService.deleteTask(id, req.user.id);
+  const isAdmin = req.user.role === 'ADMIN';
+  const task = await taskService.deleteTask(id, req.user.id, isAdmin);
   if (!task) {
     throw new AppError('Task not found', 404);
   }

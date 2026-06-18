@@ -41,7 +41,6 @@ const Register = () => {
         <div className="auth-card">
           {/* Logo */}
           <div className="auth-logo">
-            <div className="auth-logo-icon">⚡</div>
             <span className="auth-logo-text">ProManage</span>
           </div>
 
@@ -64,7 +63,7 @@ const Register = () => {
                   maxLength: { value: 60, message: 'Name too long' },
                 })}
               />
-              {errors.fullName && <span className="form-error">⚠ {errors.fullName.message}</span>}
+              {errors.fullName && <span className="form-error">{errors.fullName.message}</span>}
             </div>
 
             {/* Email */}
@@ -84,7 +83,7 @@ const Register = () => {
                   },
                 })}
               />
-              {errors.email && <span className="form-error">⚠ {errors.email.message}</span>}
+              {errors.email && <span className="form-error">{errors.email.message}</span>}
             </div>
 
             {/* Password */}
@@ -112,11 +111,12 @@ const Register = () => {
                   className="input-toggle"
                   onClick={() => setShowPassword((v) => !v)}
                   aria-label="Toggle password visibility"
+                  style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--clr-text-muted)', textTransform: 'uppercase' }}
                 >
-                  {showPassword ? '🙈' : '👁️'}
+                  {showPassword ? 'Hide' : 'Show'}
                 </button>
               </div>
-              {errors.password && <span className="form-error">⚠ {errors.password.message}</span>}
+              {errors.password && <span className="form-error">{errors.password.message}</span>}
             </div>
 
             {/* Confirm Password */}
@@ -140,11 +140,12 @@ const Register = () => {
                   className="input-toggle"
                   onClick={() => setShowConfirm((v) => !v)}
                   aria-label="Toggle confirm password visibility"
+                  style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--clr-text-muted)', textTransform: 'uppercase' }}
                 >
-                  {showConfirm ? '🙈' : '👁️'}
+                  {showConfirm ? 'Hide' : 'Show'}
                 </button>
               </div>
-              {errors.confirmPassword && <span className="form-error">⚠ {errors.confirmPassword.message}</span>}
+              {errors.confirmPassword && <span className="form-error">{errors.confirmPassword.message}</span>}
             </div>
 
             <button

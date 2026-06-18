@@ -9,6 +9,15 @@ import { TASK_STATUS_OPTIONS, TASK_PRIORITY_OPTIONS } from '../utils/constants';
 import { getErrorMessage } from '../utils/helpers';
 import toast from 'react-hot-toast';
 
+/* ── Sort Options ──────────────────────────────────────────────── */
+const TASK_SORT_OPTIONS = [
+  { label: 'Date Created', value: 'createdAt' },
+  { label: 'Due Date',     value: 'dueDate'   },
+  { label: 'Priority',     value: 'priority'  },
+  { label: 'Status',       value: 'status'    },
+  { label: 'Title',        value: 'title'     },
+];
+
 /* ── Task Modal ─────────────────────────────────────────────── */
 const TaskModal = ({ task, projects, onClose, onSave }) => {
   const [submitting, setSubmitting] = useState(false);
@@ -44,7 +53,7 @@ const TaskModal = ({ task, projects, onClose, onSave }) => {
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal__header">
           <h2 className="modal__title" id="task-modal-title">
-            {task ? '✏️ Edit Task' : '➕ New Task'}
+            {task ? 'Edit Task' : 'New Task'}
           </h2>
           <button id="close-task-modal-btn" className="modal__close" onClick={onClose} aria-label="Close">✕</button>
         </div>
@@ -62,7 +71,7 @@ const TaskModal = ({ task, projects, onClose, onSave }) => {
                 validate: (v) => v.trim().length > 0 || 'Title cannot be blank',
               })}
             />
-            {errors.title && <span className="form-error">⚠ {errors.title.message}</span>}
+            {errors.title && <span className="form-error">{errors.title.message}</span>}
           </div>
 
           <div className="form-group">
@@ -124,7 +133,12 @@ const TaskModal = ({ task, projects, onClose, onSave }) => {
 
 /* ── Tasks Page ─────────────────────────────────────────────── */
 const Tasks = () => {
-  const { tasks, loading, addTask, editTask: updateTaskHook, completeTask, removeTask } = useTasks();
+  const {
+    tasks, loading,
+    addTask, editTask: updateTaskHook, completeTask, removeTask,
+    page, totalPages, total, goToPage,
+    sortBy, order, changeSortBy,
+  } = useTasks();
 
   const [projects, setProjects]         = useState([]);
   const [taskModal, setTaskModal]       = useState(false);
@@ -167,17 +181,17 @@ const Tasks = () => {
           <h1 className="page-title">My Tasks</h1>
           <p className="page-subtitle">
             {todoCount} to do · {inProgressCount} in progress · {doneCount} completed
+            {total > 0 && ` · ${total} total`}
           </p>
         </div>
         <button id="create-task-btn" className="btn btn-primary" onClick={() => { setEditTarget(null); setTaskModal(true); }}>
-          + New Task
+          New Task
         </button>
       </div>
 
       {/* Toolbar */}
       <div className="toolbar">
         <div className="search-box">
-          <span className="search-box__icon">🔍</span>
           <input
             id="task-search"
             className="form-input"
@@ -214,6 +228,29 @@ const Tasks = () => {
             </button>
           ))}
         </div>
+
+        {/* Sort controls */}
+        <div className="sort-group">
+          <span className="sort-label">Sort:</span>
+          <select
+            id="task-sort-select"
+            className="form-select sort-select"
+            value={sortBy}
+            onChange={(e) => changeSortBy(e.target.value)}
+          >
+            {TASK_SORT_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
+          </select>
+          <button
+            id="task-sort-order-btn"
+            className="btn btn-sm btn-secondary sort-order-btn"
+            onClick={() => changeSortBy(sortBy)}
+            title={order === 'asc' ? 'Ascending – click to reverse' : 'Descending – click to reverse'}
+          >
+            {order === 'asc' ? '↑ Asc' : '↓ Desc'}
+          </button>
+        </div>
       </div>
 
       {/* Task list */}
@@ -221,7 +258,6 @@ const Tasks = () => {
         <Loader text="Loading tasks…" />
       ) : filtered.length === 0 ? (
         <div className="empty-state">
-          <span className="empty-state__icon">{searchQuery ? '🔍' : '📋'}</span>
           <span className="empty-state__title">
             {searchQuery ? 'No tasks match your search' : 'No tasks yet'}
           </span>
@@ -230,22 +266,60 @@ const Tasks = () => {
           </span>
           {!searchQuery && (
             <button id="empty-create-task-btn" className="btn btn-primary" onClick={() => { setEditTarget(null); setTaskModal(true); }}>
-              + Create Task
+              Create Task
             </button>
           )}
         </div>
       ) : (
-        <div className="tasks-list">
-          {filtered.map((task) => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              onComplete={completeTask}
-              onEdit={(t) => { setEditTarget(t); setTaskModal(true); }}
-              onDelete={(id) => setConfirmId(id)}
-            />
-          ))}
-        </div>
+        <>
+          <div className="tasks-list">
+            {filtered.map((task) => (
+              <TaskCard
+                key={task.id}
+                task={task}
+                onComplete={completeTask}
+                onEdit={(t) => { setEditTarget(t); setTaskModal(true); }}
+                onDelete={(id) => setConfirmId(id)}
+              />
+            ))}
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="pagination">
+              <button
+                id="task-prev-page-btn"
+                className="btn btn-sm btn-secondary"
+                onClick={() => goToPage(page - 1)}
+                disabled={page === 1}
+              >
+                ← Prev
+              </button>
+
+              <div className="pagination__pages">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                  <button
+                    key={p}
+                    id={`task-page-${p}-btn`}
+                    className={`pagination__page-btn ${p === page ? 'active' : ''}`}
+                    onClick={() => goToPage(p)}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                id="task-next-page-btn"
+                className="btn btn-sm btn-secondary"
+                onClick={() => goToPage(page + 1)}
+                disabled={page === totalPages}
+              >
+                Next →
+              </button>
+            </div>
+          )}
+        </>
       )}
 
       {/* Task Modal */}
@@ -263,7 +337,7 @@ const Tasks = () => {
         <div className="modal-overlay" role="alertdialog" aria-modal="true">
           <div className="modal" style={{ maxWidth: 380 }}>
             <div className="modal__header">
-              <h2 className="modal__title">🗑️ Delete Task</h2>
+              <h2 className="modal__title">Delete Task</h2>
               <button className="modal__close" onClick={() => setConfirmId(null)}>✕</button>
             </div>
             <p style={{ color: 'var(--clr-text-secondary)', marginBottom: 'var(--space-lg)' }}>

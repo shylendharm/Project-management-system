@@ -1,9 +1,9 @@
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import Loader from './Loader';
+import { useAuth } from '../../context/AuthContext';
+import Loader from '../Loader';
 
-const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+const AdminRoute = ({ children }) => {
+  const { isAuthenticated, isAdmin, loading } = useAuth();
   const location = useLocation();
 
   if (loading) return <Loader fullPage text="Authenticating..." />;
@@ -12,7 +12,11 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
+  if (!isAdmin) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
   return children;
 };
 
-export default ProtectedRoute;
+export default AdminRoute;

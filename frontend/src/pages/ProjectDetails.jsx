@@ -48,7 +48,7 @@ const TaskModal = ({ task, projectId, onClose, onSave }) => {
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal__header">
           <h2 className="modal__title" id="task-modal-title">
-            {task ? '✏️ Edit Task' : '➕ New Task'}
+            {task ? 'Edit Task' : 'New Task'}
           </h2>
           <button id="close-task-modal" className="modal__close" onClick={onClose} aria-label="Close">✕</button>
         </div>
@@ -66,7 +66,7 @@ const TaskModal = ({ task, projectId, onClose, onSave }) => {
                 validate: (v) => v.trim().length > 0 || 'Title cannot be blank',
               })}
             />
-            {errors.title && <span className="form-error">⚠ {errors.title.message}</span>}
+            {errors.title && <span className="form-error">{errors.title.message}</span>}
           </div>
 
           <div className="form-group">
@@ -247,10 +247,10 @@ const ProjectDetails = () => {
               <div style={{ display: 'flex', gap: 'var(--space-lg)', marginTop: 'var(--space-sm)', color: 'var(--clr-text-muted)', fontSize: '0.85rem', flexWrap: 'wrap' }}>
                 {project.endDate && (
                   <span style={{ color: isOverdue(project.endDate) ? 'var(--clr-danger)' : 'inherit' }}>
-                    📅 Due {formatDate(project.endDate)}
+                    Due {formatDate(project.endDate)}
                   </span>
                 )}
-                <span>📅 Created {formatDate(project.createdAt)}</span>
+                <span>Created {formatDate(project.createdAt)}</span>
               </div>
             </>
           )}
@@ -258,8 +258,8 @@ const ProjectDetails = () => {
 
         {!editMode && (
           <div style={{ display: 'flex', gap: 'var(--space-sm)' }}>
-            <button id="edit-project-btn" className="btn btn-secondary" onClick={() => setEditMode(true)}>✏️ Edit</button>
-            <button id="delete-project-btn" className="btn btn-danger" onClick={handleProjectDelete}>🗑️ Delete</button>
+            <button id="edit-project-btn" className="btn btn-secondary" onClick={() => setEditMode(true)}>Edit</button>
+            <button id="delete-project-btn" className="btn btn-danger" onClick={handleProjectDelete}>Delete</button>
           </div>
         )}
       </div>
@@ -284,10 +284,10 @@ const ProjectDetails = () => {
       {/* Tasks section */}
       <div className="section">
         <div className="section-header">
-          <h2 className="section-title">✅ Tasks ({tasks.length})</h2>
+          <h2 className="section-title">Tasks ({tasks.length})</h2>
           <div style={{ display: 'flex', gap: 'var(--space-sm)' }}>
             <button id="add-task-btn" className="btn btn-primary btn-sm" onClick={() => { setEditTask(null); setTaskModal(true); }}>
-              + Add Task
+              Add Task
             </button>
           </div>
         </div>
@@ -310,11 +310,10 @@ const ProjectDetails = () => {
           <Loader text="Loading tasks…" />
         ) : filteredTasks.length === 0 ? (
           <div className="empty-state" style={{ minHeight: 180 }}>
-            <span className="empty-state__icon">📋</span>
             <span className="empty-state__title">No tasks {statusFilter !== 'ALL' ? `with status "${statusFilter.replace('_',' ')}"` : 'yet'}</span>
             {statusFilter === 'ALL' && (
               <button id="empty-add-task-btn" className="btn btn-primary btn-sm" onClick={() => { setEditTask(null); setTaskModal(true); }}>
-                + Add First Task
+                Add First Task
               </button>
             )}
           </div>
@@ -348,7 +347,7 @@ const ProjectDetails = () => {
         <div className="modal-overlay" role="alertdialog" aria-modal="true">
           <div className="modal" style={{ maxWidth: 380 }}>
             <div className="modal__header">
-              <h2 className="modal__title">🗑️ Delete Task</h2>
+              <h2 className="modal__title">Delete Task</h2>
               <button className="modal__close" onClick={() => setConfirmDeleteTask(null)}>✕</button>
             </div>
             <p style={{ color: 'var(--clr-text-secondary)', marginBottom: 'var(--space-lg)' }}>

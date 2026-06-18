@@ -7,9 +7,12 @@ const register = async (req, res, next) => {
     res.status(201).json({
       success: true,
       data: {
-        id: user.id,
-        fullName: user.fullName,
-        email: user.email,
+        user: {
+          id: user.id,
+          fullName: user.fullName,
+          email: user.email,
+          role: user.role,
+        },
         token,
       },
     });
@@ -25,9 +28,12 @@ const login = async (req, res, next) => {
     res.json({
       success: true,
       data: {
-        id: user.id,
-        fullName: user.fullName,
-        email: user.email,
+        user: {
+          id: user.id,
+          fullName: user.fullName,
+          email: user.email,
+          role: user.role,
+        },
         token,
       },
     });

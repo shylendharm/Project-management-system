@@ -30,6 +30,7 @@ const registerUser = async ({ fullName, email, password }) => {
       id: true,
       fullName: true,
       email: true,
+      role: true,
       createdAt: true,
     },
   });
@@ -65,6 +66,7 @@ const loginUser = async ({ email, password }) => {
       id: user.id,
       fullName: user.fullName,
       email: user.email,
+      role: user.role,
     },
     token,
   };

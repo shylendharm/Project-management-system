@@ -1,5 +1,5 @@
 const express = require('express');
-const { getDashboardStats } = require('../controllers/dashboard.controller');
+const { getDashboardStats, getNotifications } = require('../controllers/dashboard.controller');
 const { protect } = require('../middlewares/auth.middleware');
 
 const router = express.Router();
@@ -11,5 +11,8 @@ router.use(protect);
 // GET /api/dashboard/stats  → Get dashboard statistics (alias)
 router.get('/', getDashboardStats);
 router.get('/stats', getDashboardStats);
+
+// GET /api/dashboard/notifications → Get smart notifications
+router.get('/notifications', getNotifications);
 
 module.exports = router;

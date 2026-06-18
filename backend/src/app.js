@@ -7,6 +7,7 @@ const authRoutes = require('./routes/auth.routes');
 const projectRoutes = require('./routes/project.routes');
 const taskRoutes = require('./routes/task.routes');
 const dashboardRoutes = require('./routes/dashboard.routes');
+const adminRoutes = require('./routes/admin.routes');
 const { globalLimiter } = require('./middlewares/rateLimiter');
 const { errorHandler } = require('./middlewares/error.middleware');
 
@@ -65,6 +66,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Global error handling middleware (must be last)
 app.use(errorHandler);

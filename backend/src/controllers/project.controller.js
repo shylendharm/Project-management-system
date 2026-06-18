@@ -13,12 +13,22 @@ const createProject = catchAsync(async (req, res, next) => {
   return sendSuccess(res, 'Project created successfully', project, 201);
 });
 
-// ─── GET ALL PROJECTS (own) ───────────────────────────────────────────────────
+// ─── GET ALL PROJECTS (own or all if admin) ───────────────────────────────────
 const getAllProjects = catchAsync(async (req, res, next) => {
-  const { search, status } = req.query;
-  const projects = await projectService.getAllProjects(req.user.id, { search, status });
-  
-  return sendSuccess(res, 'Projects retrieved successfully', projects, 200, { count: projects.length });
+  const { search, status, sortBy = 'createdAt', order = 'desc' } = req.query;
+  const page  = Math.max(1, parseInt(req.query.page,  10) || 1);
+  const limit = Math.min(50, Math.max(1, parseInt(req.query.limit, 10) || 9));
+  const isAdmin = req.user.role === 'ADMIN';
+
+  const { data, total } = await projectService.getAllProjects(req.user.id, { search, status, page, limit, sortBy, order }, isAdmin);
+  const totalPages = Math.ceil(total / limit);
+
+  return sendSuccess(res, 'Projects retrieved successfully', data, 200, {
+    total,
+    totalPages,
+    currentPage: page,
+    limit,
+  });
 });
 
 // ─── GET SINGLE PROJECT ───────────────────────────────────────────────────────
@@ -28,7 +38,8 @@ const getProjectById = catchAsync(async (req, res, next) => {
     throw new AppError('Invalid project ID format', 400);
   }
 
-  const project = await projectService.getProjectById(id, req.user.id);
+  const isAdmin = req.user.role === 'ADMIN';
+  const project = await projectService.getProjectById(id, req.user.id, isAdmin);
   if (!project) {
     throw new AppError('Project not found', 404);
   }
@@ -43,7 +54,8 @@ const updateProject = catchAsync(async (req, res, next) => {
     throw new AppError('Invalid project ID format', 400);
   }
 
-  const project = await projectService.updateProject(id, req.user.id, req.validatedBody);
+  const isAdmin = req.user.role === 'ADMIN';
+  const project = await projectService.updateProject(id, req.user.id, req.validatedBody, isAdmin);
   if (!project) {
     throw new AppError('Project not found', 404);
   }
@@ -58,7 +70,8 @@ const deleteProject = catchAsync(async (req, res, next) => {
     throw new AppError('Invalid project ID format', 400);
   }
 
-  const deleted = await projectService.deleteProject(id, req.user.id);
+  const isAdmin = req.user.role === 'ADMIN';
+  const deleted = await projectService.deleteProject(id, req.user.id, isAdmin);
   if (!deleted) {
     throw new AppError('Project not found', 404);
   }

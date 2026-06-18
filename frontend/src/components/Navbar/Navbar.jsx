@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { getInitials } from '../utils/helpers';
+import { getInitials } from '../../utils/helpers';
+import NotificationPanel from '../NotificationPanel';
 
 const Navbar = ({ onMenuToggle }) => {
   const { user, logout } = useAuth();
@@ -14,6 +15,7 @@ const Navbar = ({ onMenuToggle }) => {
     '/dashboard': 'Dashboard',
     '/projects': 'Projects',
     '/tasks': 'My Tasks',
+    '/admin': 'Admin Control Panel',
   };
 
   const getTitle = () => {
@@ -46,20 +48,8 @@ const Navbar = ({ onMenuToggle }) => {
       </div>
 
       <div className="navbar__right">
-        {/* Notification placeholder */}
-        <button
-          id="notifications-btn"
-          className="btn btn-ghost btn-icon"
-          title="Notifications"
-          style={{ fontSize: '1.1rem', position: 'relative' }}
-        >
-          🔔
-          <span style={{
-            position: 'absolute', top: 4, right: 4,
-            width: 8, height: 8, borderRadius: '50%',
-            background: 'var(--clr-danger)',
-          }} />
-        </button>
+        {/* Smart Notification Panel */}
+        <NotificationPanel />
 
         {/* User menu */}
         <div className="navbar__user" style={{ position: 'relative' }}>
@@ -115,7 +105,7 @@ const Navbar = ({ onMenuToggle }) => {
                   onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(244,63,94,0.08)'}
                   onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
                 >
-                  🚪 Logout
+                  Logout
                 </button>
               </div>
             </>

@@ -19,7 +19,7 @@ const protect = async (req, res, next) => {
     // Find user
     const user = await prisma.user.findUnique({
       where: { id: decoded.id },
-      select: { id: true, fullName: true, email: true } // Exclude password
+      select: { id: true, fullName: true, email: true, role: true } // Exclude password
     });
 
     if (!user) {
@@ -36,6 +36,20 @@ const protect = async (req, res, next) => {
   }
 };
 
+/**
+ * Role-based authorization middleware factory.
+ * Usage: authorize('ADMIN') or authorize('ADMIN', 'USER')
+ */
+const authorize = (...roles) => {
+  return (req, res, next) => {
+    if (!req.user || !roles.includes(req.user.role)) {
+      return next(new AppError('You do not have permission to perform this action', 403));
+    }
+    next();
+  };
+};
+
 module.exports = {
   protect,
+  authorize,
 };

@@ -38,7 +38,6 @@ const Login = () => {
         <div className="auth-card">
           {/* Logo */}
           <div className="auth-logo">
-            <div className="auth-logo-icon">⚡</div>
             <span className="auth-logo-text">ProManage</span>
           </div>
 
@@ -64,7 +63,7 @@ const Login = () => {
                 })}
               />
               {errors.email && (
-                <span className="form-error">⚠ {errors.email.message}</span>
+                <span className="form-error">{errors.email.message}</span>
               )}
             </div>
 
@@ -89,12 +88,13 @@ const Login = () => {
                   className="input-toggle"
                   onClick={() => setShowPassword((v) => !v)}
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--clr-text-muted)', textTransform: 'uppercase' }}
                 >
-                  {showPassword ? '🙈' : '👁️'}
+                  {showPassword ? 'Hide' : 'Show'}
                 </button>
               </div>
               {errors.password && (
-                <span className="form-error">⚠ {errors.password.message}</span>
+                <span className="form-error">{errors.password.message}</span>
               )}
             </div>
 
