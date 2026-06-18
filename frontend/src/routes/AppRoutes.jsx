@@ -15,7 +15,7 @@ import Loader from '../components/Loader';
 const AppRoutes = () => {
   const { loading, isAuthenticated, isAdmin } = useAuth();
 
-  if (loading) return <Loader fullPage text="Loading ProManage…" />;
+  if (loading) return <Loader fullPage text="Loading Gestion…" />;
 
   return (
     <Routes>

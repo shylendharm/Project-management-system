@@ -19,8 +19,9 @@ const Sidebar = ({ open, onClose }) => {
   return (
     <aside className={`sidebar${open ? ' open' : ''}`} id="sidebar">
       {/* Logo */}
-      <div className="sidebar__logo">
-        <span className="sidebar__logo-text">ProManage</span>
+      <div className="sidebar__logo" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <img src="/logo.svg" alt="Gestion Logo" width="28" height="28" />
+        <span className="sidebar__logo-text">Gestion</span>
       </div>
 
       {/* Navigation */}

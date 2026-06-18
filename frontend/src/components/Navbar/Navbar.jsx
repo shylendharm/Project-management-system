@@ -20,7 +20,7 @@ const Navbar = ({ onMenuToggle }) => {
 
   const getTitle = () => {
     if (location.pathname.startsWith('/projects/')) return 'Project Details';
-    return pageTitles[location.pathname] || 'ProManage';
+    return pageTitles[location.pathname] || 'Gestion';
   };
 
   const handleLogout = async () => {

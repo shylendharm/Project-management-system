@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 /* ============================================================
-   ProManage – Design System
+   Gestion – Design System
    Light Minimalist Theme
    ============================================================ */
 
@@ -613,6 +613,16 @@ ul, ol { list-style: none; }
 }
 
 .input-toggle:hover { color: var(--clr-text-primary); }
+
+/* Hide native password reveal icon injected by Edge and other browsers */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+input[type="password"]::-webkit-credentials-auto-fill-button {
+  visibility: hidden;
+  display: none !important;
+}
 
 /* ============================================================
    DASHBOARD

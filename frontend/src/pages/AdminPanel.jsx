@@ -154,7 +154,7 @@ const AdminPanel = () => {
 
       {userToDelete && (
         <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="delete-user-title">
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
+          <div className="modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '420px', padding: 'var(--space-md)' }}>
             <div className="modal__header">
               <h2 className="modal__title" id="delete-user-title">
                 Delete User

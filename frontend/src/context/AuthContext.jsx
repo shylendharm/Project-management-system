@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('user', JSON.stringify(userData));
     setToken(jwt);
     setUser(userData);
-    toast.success('Account created successfully! 🎉');
+    toast.success('Account created successfully!');
     return userData;
   }, []);
 

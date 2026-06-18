@@ -40,8 +40,9 @@ const Register = () => {
       <div className="auth-container">
         <div className="auth-card">
           {/* Logo */}
-          <div className="auth-logo">
-            <span className="auth-logo-text">ProManage</span>
+          <div className="auth-logo" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+            <img src="/logo.svg" alt="Gestion Logo" width="36" height="36" />
+            <span className="auth-logo-text">Gestion</span>
           </div>
 
           <h1 className="auth-title">Create your account</h1>

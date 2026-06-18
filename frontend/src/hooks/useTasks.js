@@ -49,7 +49,7 @@ const useTasks = (projectId = null) => {
   const addTask = async (data) => {
     const res = await createTask(data);
     const task = res.data.data || res.data.task;
-    toast.success('Task created! ✅');
+    toast.success('Task created!');
     if (page === 1) {
       fetchTasks({ page: 1 });
     } else {
@@ -70,7 +70,7 @@ const useTasks = (projectId = null) => {
     const res = await markComplete(id);
     const updated = res.data.data || res.data.task;
     setTasks((prev) => prev.map((t) => (t.id === id ? updated : t)));
-    toast.success('Task marked as complete! 🎉');
+    toast.success('Task marked as complete!');
     return updated;
   };
 

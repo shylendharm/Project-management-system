@@ -25,10 +25,10 @@ const App = () => {
               maxWidth: '400px',
             },
             success: {
-              iconTheme: { primary: '#22d3a4', secondary: '#131c35' },
+              icon: null,
             },
             error: {
-              iconTheme: { primary: '#f43f5e', secondary: '#131c35' },
+              icon: null,
             },
           }}
         />

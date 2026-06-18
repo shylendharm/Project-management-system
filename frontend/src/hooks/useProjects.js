@@ -44,7 +44,7 @@ const useProjects = () => {
   const addProject = async (data) => {
     const res = await createProject(data);
     const project = res.data.data || res.data.project;
-    toast.success('Project created successfully! 🚀');
+    toast.success('Project created successfully!');
     // Go to page 1 to see the newest item. If already on page 1, manually fetch to update.
     if (page === 1) {
       fetchProjects({ page: 1 });
