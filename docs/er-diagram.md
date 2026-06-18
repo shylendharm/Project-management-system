@@ -52,3 +52,7 @@ erDiagram
     User ||--o{ AuditLog : "performs"
     Project ||--o{ Task : "contains"
 ```
+
+### Visual Diagram
+
+![ER Diagram](https://kroki.io/mermaid/svg/eJytU8tqwzAQvOcrFt_zA74FQiGkFNMkH7C1NmZbWTKrFSEk-fdi11Vqu1DTVgc9dqRhZiSRrBkrwXoBAHAIJHDppm3bOAU2UGxTZafCroJjtPYJaxrXqUa242KDIZy8mFR_9pZAvL0fX6PSnmuCUgiVzEqnUGzMF-jW9YX4Vyp1jmT3jVxDoRRulL1LUE-5U9QYIHTDVExQFG1XU4icGQCtohhINgYetn92vMfwNseustpZflvCQtgL6xmafjJAf4jCRJr4bT5CHFr-3yBW0bA--mpOGFgOLKc0FNmG3-m7Le4f5npdLv0lPcYcMn9yIZts6O4uh6xngpfzdE-ylUPWkBy91D3TJ_2YzDtFdiF7B-kqD1w=)
