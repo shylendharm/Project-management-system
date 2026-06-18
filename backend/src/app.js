@@ -33,7 +33,13 @@ app.use(helmet({
 
 // CORS Configuration with strict origin validation
 const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
+  ? process.env.ALLOWED_ORIGINS.split(',').map(origin => {
+      let trimmed = origin.trim();
+      if (trimmed && !trimmed.startsWith('http://') && !trimmed.startsWith('https://')) {
+        trimmed = 'https://' + trimmed;
+      }
+      return trimmed;
+    })
   : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://localhost:5173'];
 
 app.use(cors({
