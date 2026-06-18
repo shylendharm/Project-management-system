@@ -414,6 +414,85 @@ Returns aggregated stats for projects and tasks belonging to the authenticated u
 
 ---
 
+## Admin
+
+All admin endpoints are **protected** and require an `ADMIN` role — include `Authorization: Bearer <token>`.
+
+### Get All Users
+`GET /admin/users`
+
+Returns all users in the system.
+
+**Response `200`:**
+```json
+{
+  "success": true,
+  "count": 10,
+  "data": [
+    {
+      "id": 1,
+      "fullName": "Admin User",
+      "email": "admin@example.com",
+      "role": "ADMIN",
+      "createdAt": "2026-06-18T00:00:00.000Z"
+    }
+  ]
+}
+```
+
+---
+
+### Delete User
+`DELETE /admin/users/:id`
+
+Deletes a user and cascades the deletion to their projects, tasks, and audit logs.
+
+**Response `200`:**
+```json
+{
+  "success": true,
+  "message": "User deleted successfully"
+}
+```
+
+---
+
+### Get Audit Logs
+`GET /admin/logs`
+
+Returns paginated system audit logs.
+
+**Query Parameters:**
+| Param   | Type     | Description             |
+|---------|----------|-------------------------|
+| `page`  | `number` | Page number (default 1) |
+| `limit` | `number` | Items per page (default 20)|
+
+**Response `200`:**
+```json
+{
+  "success": true,
+  "data": {
+    "logs": [
+      {
+        "id": 1,
+        "action": "LOGIN",
+        "details": null,
+        "user": { "fullName": "John Doe", "email": "john@example.com" },
+        "createdAt": "2026-06-18T10:00:00.000Z"
+      }
+    ],
+    "pagination": {
+      "total": 50,
+      "page": 1,
+      "pages": 3
+    }
+  }
+}
+```
+
+---
+
 ## Status & Error Codes
 
 | Code | Meaning                                        |
@@ -422,6 +501,7 @@ Returns aggregated stats for projects and tasks belonging to the authenticated u
 | 201  | Created                                        |
 | 400  | Bad Request (validation error or invalid ID)   |
 | 401  | Unauthorized (missing or invalid token)        |
+| 403  | Forbidden (requires ADMIN role)                |
 | 404  | Not Found                                      |
 | 429  | Too Many Requests (rate limiter)               |
 | 500  | Internal Server Error                          |
