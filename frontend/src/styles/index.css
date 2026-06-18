@@ -1382,7 +1382,7 @@ input[type="password"]::-webkit-credentials-auto-fill-button {
   top: calc(100% + 10px);
   right: 0;
   width: 360px;
-  max-height: 520px;
+  max-height: min(520px, calc(100vh - 90px));
   background: var(--clr-surface);
   border: 1px solid var(--clr-border);
   border-radius: var(--radius-lg);
