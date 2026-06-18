@@ -13,4 +13,14 @@ export default defineConfig({
       },
     },
   },
+  test: {
+    // Use jsdom to simulate a browser environment
+    environment: 'jsdom',
+    // Run our setup file before each test suite
+    setupFiles: './src/tests/setup.js',
+    // Include .jsx and .js test files
+    include: ['src/**/*.{test,spec}.{js,jsx}'],
+    globals: true,
+  },
 });
+

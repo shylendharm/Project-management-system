@@ -8,10 +8,10 @@ on:
 
 jobs:
   # ─────────────────────────────────────────────────
-  # Backend: Install dependencies & validate schema
+  # Backend: Install, generate Prisma, run tests
   # ─────────────────────────────────────────────────
   backend:
-    name: Backend – Install & Validate
+    name: Backend – Test & Validate
     runs-on: ubuntu-latest
 
     steps:
@@ -33,15 +33,24 @@ jobs:
         env:
           DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy"
 
+      - name: Run backend unit & integration tests
+        working-directory: backend
+        run: npm test
+        env:
+          NODE_ENV: test
+          JWT_SECRET: ci-test-jwt-secret
+          JWT_EXPIRES_IN: 1d
+          DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy"
+
       - name: Validate backend entry point (syntax check)
         working-directory: backend
         run: node --check src/server.js
 
   # ─────────────────────────────────────────────────
-  # Frontend: Install dependencies & build
+  # Frontend: Install, test, and build
   # ─────────────────────────────────────────────────
   frontend:
-    name: Frontend – Install & Build
+    name: Frontend – Test & Build
     runs-on: ubuntu-latest
 
     steps:
@@ -58,6 +67,10 @@ jobs:
       - name: Install frontend dependencies
         working-directory: frontend
         run: npm install
+
+      - name: Run frontend unit tests (Vitest)
+        working-directory: frontend
+        run: npm test
 
       - name: Build frontend (Vite)
         working-directory: frontend
