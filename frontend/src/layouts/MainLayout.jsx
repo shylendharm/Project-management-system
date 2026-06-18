@@ -21,10 +21,6 @@ const MainLayout = () => {
       {/* Mobile overlay backdrop */}
       {sidebarOpen && (
         <div
-          style={{
-            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)',
-            zIndex: 150, display: 'none',
-          }}
           id="sidebar-backdrop"
           onClick={() => setSidebarOpen(false)}
         />

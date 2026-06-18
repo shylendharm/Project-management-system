@@ -37,7 +37,6 @@ const Navbar = ({ onMenuToggle }) => {
           id="sidebar-toggle-btn"
           className="btn btn-ghost btn-icon"
           onClick={onMenuToggle}
-          style={{ display: 'none' }}
           aria-label="Toggle sidebar"
         >
           ☰

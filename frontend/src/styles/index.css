@@ -225,6 +225,18 @@ ul, ol { list-style: none; }
 /* ============================================================
    SIDEBAR
    ============================================================ */
+#sidebar-toggle-btn {
+  display: none;
+}
+
+#sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 150;
+  display: none;
+}
 .sidebar {
   position: fixed;
   top: 0;
@@ -1234,6 +1246,8 @@ input[type="password"]::-webkit-credentials-auto-fill-button {
 @media (max-width: 1024px) {
   .sidebar { transform: translateX(-100%); transition: transform 0.2s ease; }
   .sidebar.open { transform: translateX(0); }
+  #sidebar-toggle-btn { display: flex; align-items: center; justify-content: center; }
+  #sidebar-backdrop { display: block; }
   .main-content { margin-left: 0; }
   .navbar { left: 0; }
   .form-row { grid-template-columns: 1fr; }
