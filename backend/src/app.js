@@ -56,6 +56,9 @@ app.use(cors({
 app.use(express.json());
 app.use(morgan('dev'));
 
+// Trust proxy (required for express-rate-limit behind Render/reverse proxy)
+app.set('trust proxy', 1);
+
 // Rate Limiting
 app.use('/api', globalLimiter);
 
