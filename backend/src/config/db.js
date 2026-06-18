@@ -10,6 +10,7 @@ dotenv.config({ path: path.resolve(__dirname, '..', '..', '.env') });
 // Create a pg connection pool using the resolved DATABASE_URL
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
 });
 
 // Create the Prisma adapter
