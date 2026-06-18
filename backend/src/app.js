@@ -38,10 +38,11 @@ app.use(cors({
     // Allow requests with no origin (like mobile apps, curl, postman in dev)
     if (!origin) return callback(null, true);
     
-    // Check if origin matches allowed list or is a local development address
+    // Check if origin matches allowed list, is a Vercel preview/deployment domain, or is a local development address
     const isLocalhost = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+    const isVercelDomain = /^https:\/\/project-management-.*\.vercel\.app$/.test(origin);
     
-    if (allowedOrigins.indexOf(origin) !== -1 || isLocalhost) {
+    if (allowedOrigins.indexOf(origin) !== -1 || isLocalhost || isVercelDomain) {
       callback(null, true);
     } else {
       callback(new Error('Blocked by CORS policy: Origin not allowed.'));
